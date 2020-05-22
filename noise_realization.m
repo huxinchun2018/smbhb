@@ -1,11 +1,11 @@
 %% start from Time Domain . 2020/5/22
- 
+
 paras=[2^21,1/15];  %2^21 is the number of time series
 N=paras(1)/2+1;
 fs=paras(2);   %sampling frequency
 c=3.0*10^8;
 L=1.7*10^8;
-fb=(1:N)/N*fs/2;%the frequency bin
+fb=(1:N)/N*fs/2;  %the frequency bin
 % S_pm=2.5*10^-48*fb.^-2;%the one-side noise power spectral density of proof mass;
 % S_op=1.8*10^-37*fb.^2;%the one-side noise power spectral density of optical path;
 %the noise' transfer function of AET.
@@ -17,12 +17,12 @@ S_X=(4*sin(4*pi*fb*L/c).^2+32*sin(2*pi*fb*L/c).^2).*S_pm...
 %generate the time-series random noise satifying the TDI X combination noise PSD
 %spectrum under the choosed sampling frequency.
 h_fX1=sqrt(1/2)*S_X.^(1/2);
-X_PHI=unifrnd(0,2*pi,1,length(fb)-1); %generate the uniform distributions random phase.
-h_fX2=h_fX1.*[1,exp(1i*X_PHI)];
+X_PHI=unifrnd(0,2*pi,1,length(fb)); %generate the uniform distributions random phase.
+h_fX2=h_fX1.*exp(1i*X_PHI);
 
 h_fX=[h_fX2,conj(fliplr(h_fX2(2:end)))];%let hf conjugate symmetry,so the ifft time series is real
 X_noise1=sqrt(fs*2*N)*ifft(h_fX);%factor sqrt(fs*2*N) is the relationship between continuous and discrete spectrum
-X_noise=X_noise1(1:end-1);
+X_noise=real(X_noise1(1:end-1));
 
 t=1:1/fs:2*(N-1)/fs;
 figure
@@ -30,14 +30,20 @@ plot(t,X_noise)
 xlabel('t (s)')
 ylabel('X noise for TQ')
 
+%Gaussian noise test
 figure
-hist(X_noise,1000)
+histfit(X_noise*10^23)
 xlabel('noise amplitude')
 ylabel('number')
 
 % PSD test
-psd_X=abs(fft(X_noise)).^2/fs/  
-
+psd_X=abs(fft(X_noise)).^2/fs/(2*(N-1));
+figure
+plot(log10(fb),log10(2*psd_X(1:N)))
+xlabel('log(f) Hz')
+ylabel('TQ TDI X PSD')
+hold on
+plot(log10(fb),log10(S_X))
 %% start from frequncy domain 2020/5/22
 
 % M=2^21; % Number of points in the PSD

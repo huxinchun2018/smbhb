@@ -36,7 +36,7 @@ xlabel('noise amplitude')
 ylabel('number')
 
 % PSD test
-psd_X=abs(fft(X_noise)).^2/fs/  
+psd_X=abs(fft(X_noise)).^2/fs/(2*(N-1))
 
 %% start from frequncy domain 2020/5/22
 
