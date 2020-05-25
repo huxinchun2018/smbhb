@@ -302,7 +302,7 @@ Tnoise = struct('timeVec',t,'noise',n);
 dataLISA = struct('sampFre',0.02,'dataVec',sf);
 
 sampFreq=0.02;
-dataY=dataLISA.dataVec;   % noise + signal
+dataY=dataLISA.dataVec';   % noise + signal
 nSamples=length(dataY);
 dataX = Tnoise.timeVec;    % timeVec
 dataLen = nSamples/sampFreq;
@@ -322,8 +322,8 @@ AU=1.5*10^11;
 fm=1/(365*86400);
 yr=365*86400;
 
-Tcmin = 0.5;
-Tcmax = 1.0;
+Tcmin = 0;
+Tcmax = 1;
 mmin = 1;
 mmax = 5;
 etamin = 0;
@@ -333,8 +333,8 @@ thetamax = pi;
 phimin = 0;
 phimax = 2*pi;
 
-% Tcmin = 0.9976;
-% Tcmax = 0.9976;
+% Tcmin = 1.04;
+% Tcmax = 1.04;
 % mmin = 1.2;
 % mmax = 1.2;
 % etamin = eta;
@@ -365,18 +365,3 @@ ffparams = struct('dataX', dataX,...  % timeVec
 fitFuncHandle = @(x) TDI_LISA_searchfunc(x,ffparams);
 % fitFuncHandle([(tc/86400/365-0.5)/0.5,0.05,eta,theta/pi,phi/2/pi])
 
-%% SKY location detecbility
-% d = 0:0.02:1;
-% d1 = 0:0.02:1;
-% fitVals = zeros(length(d),length(d1));
-% for lp = 1:length(d)
-%     for lp1 = 1:length(d1)
-%       fitVals(lp,lp1) = fitFuncHandle([(tc/86400/365-0.5)/0.5,0.05,eta,d(lp),d1(lp1)]);
-%     end
-% end
-% figure
-% surf(d1,d,fitVals) 
-% % plot(d,fitVals)
-% title('tc,m,eta with true value')
-% xlabel('\phi')
-% ylabel('\theta')
